@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>THP</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<!-- font awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Custom styles for this template -->
+    <link href="css/shop-item.css" rel="stylesheet">
+    <!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+         
+          	<!-- search bar -->
+			<li class="nav-item">
+				<form th:action="@{/list}" method="get" class="form-inline my-2 my-lg-0 mr-lg-2">
+					<div class="input-group">
+						<input class="form-control" name="keyword" type="text" maxlength="100" placeholder="Search for...">
+						<span class="input-group-append">
+							<button class="btn btn-secondary" type="submit"><i class="fa fa-search"></i></button>
+						</span>
+					</div>
+				</form>
+			</li>
+
+			<li class="nav-item">
+              <a class="nav-link" th:href="@{/index}">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" th:href="@{/list}">Search</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/cart}">Cart</a>
+            </li>
+            <li class="nav-item">
+              <a th:if="${session.user == null}" class="nav-link" th:href="@{/login}">Login</a>
+              <a th:if="${session.user != null}" class="nav-link" th:href="@{/myPage}">MyPage</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <div class="row">
+
+        <div class="col-lg-3">
+         <h1 class="my-4">Trendy Home Project</h1>
+          <div class="list-group">
+            <a th:href="@{/list(categoryId='1')}" class="list-group-item">Bedroom　ベッドルーム</a>
+            <a th:href="@{/list(categoryId='2')}" class="list-group-item">Kitchen　キッチン</a>
+            <a th:href="@{/list(categoryId='3')}" class="list-group-item">Bathroom　バスルーム</a>
+            <a th:href="@{/list(categoryId='4')}" class="list-group-item">Outdoor　アウトドア</a>
+            <a th:href="@{/list(categoryId='5')}" class="list-group-item">Decorations　飾り物</a>
+            <a th:href="@{/list(categoryId='6')}" class="list-group-item">Dining　ダイニング</a>
+            <a th:href="@{/list(categoryId='7')}" class="list-group-item">Living　リビング</a>
+            <a th:href="@{/list(categoryId='8')}" class="list-group-item">Lighting　ライティング</a>
+            <a th:href="@{/list(categoryId='9')}" class="list-group-item">Storage　収納</a>
+            <a th:href="@{/list(categoryId='10')}" class="list-group-item">ETC　その他</a>
+          </div>
+        </div>
+        <!-- /.col-lg-3 -->
+
+        <div class="col-lg-9">
+
+          <div class="card mt-4">
+            <img class="card-img-top img-fluid" th:src="@{${'~/img/'+product.image+'.jpg'}}" th:alt="${product.name}">
+            
+            <div class="card-body">
+              <h3 class="card-title"><span th:text="${product.name}">Product Name</span></h3>
+              <h4><span th:text="${product.price+'円'}">$24.99</span></h4>
+              <p class="card-text"><span th:text="${product.details}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur praesentium animi perspiciatis molestias iure, ducimus!</span></p>
+              <!-- user review score -->
+              <div id="prateYo" style="display: inline-block;"></div>
+              <span class="counter badge badge-secondary"></span>
+              <input type="hidden" th:id="paverage" th:value="${product.average}">
+              <!-- number of product select -->
+            <form th:action="@{/cartPut}" method="get">
+            <input type="hidden" name="pid" id="pid" th:value="${product.id}">
+             	<select name="num">
+					<option th:each="n : ${new int[product.stockQuantity]}" th:value="${nStat.count}" th:text="${nStat.count}"></option>
+				</select>
+				<button type="submit" class="btn btn-success">カートに入れる</button>
+             </form>
+            </div>
+            
+          </div>
+          <!-- /.card -->
+
+		<!-- comment list -->
+          <div class="card card-outline-secondary my-4" th:if="${clist}">
+          	<div class="card-header">
+              Product Reviews
+            </div>
+            <div class="card-body"  th:each="c : ${clist}">
+            	<div th:if="${c.id != mflag}">
+            		<div th:id="${c.id}"></div>
+		            <input type="hidden" th:id="average" th:value="${c.score}">
+		            
+	              	<p th:text="${c.comment}"></p>
+	              	<small class="text-muted"><span th:text="${c.nickName +'  '+c.inpDate}">Posted by Anonymous on 3/1/17</span></small>
+	              	<hr>
+	        		<div th:if="${session.user}">
+		              <a th:href="@{/deleteComment(cid=${c.id}, productId=${product.id})}" class="btn btn-danger" th:if="${session.user.id == c.userId}">削除</a>
+		              <a th:href="@{/modifyComment(cid=${c.id}, productId=${product.id})}" class="btn btn-info" th:if="${session.user.id == c.userId}">修正</a>
+	              	</div>
+            	</div>
+            	<!-- comment modify -->
+            	<div th:if="${c.id == mflag}">
+            		<div th:id="mrateYo"></div>
+            		<form th:action="@{/modifyCommentdo}" method="post" th:object="${cm}">
+		              	<!-- comment info -->
+		              	<input type="hidden" th:name="id" th:value="${c.id}">
+		              	<input type="hidden" th:name="productId" th:value="${c.productId}">
+		              	<input type="hidden" th:name="userId" th:value="${c.userId}">
+		              	<input type="hidden" th:name="orderDetailId" th:value="${c.orderDetailId}">
+		              	<input type="hidden" th:name="score" th:id="modifyscore" th:value="${c.score}">
+		              	<!-- comment content -->
+		           		<textarea rows="4" th:name="comment" th:value="${c.comment}" style="width:100%; resize: none;" ></textarea>
+		              	<small class="text-muted"><span th:text="${c.nickName +'  '+c.inpDate}">Posted by Anonymous on 3/1/17</span></small>
+		              	<button type="submit" class="btn btn-info">修正</button>
+		              	<hr>
+	              	</form>
+            	</div>
+            </div>
+          </div>
+        
+        <!-- comment form -->
+		<div class="card card-outline-secondary my-4" th:if="${session.user}">
+            <!-- 入力 -->
+            <div class="card-body" th:if="${cmflag == 'true'}">
+            <!-- comment form -->
+              <form th:action="@{/insertComment}" method="post" th:object="${comment}">
+              	<!-- comment info -->
+              	<input type="hidden" th:name="productId" th:value="${product.id}">
+              	<input type="hidden" th:name="userId" th:value="${session.user.id}">
+              	<!-- comment content -->
+              	<div id="rateYo" style="display: inline-block;"></div><span class="counter"></span>
+              	<input type="hidden" th:name="score" th:id="score" value="3">
+           		<textarea rows="4" th:field="*{comment}" style="width:100%; resize: none;" ></textarea>
+              	<button type="submit" class="btn btn-success">保存</button>
+              </form>
+            </div>
+          </div>
+          
+        <!-- /.card  -->
+   
+ 		</div>
+        <!-- /.col-lg-9 -->
+
+      </div>
+
+    </div>
+    <!-- /.container -->
+	<hr>
+    <!-- Footer -->
+    <footer class="fixed-bottom py-5 bg-dark" style="position:relative;">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+	<input type="hidden" th:value="${clist}" id="clist">
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+ 	<!-- jquery -->
+ 	<script src="https://code.jquery.com/jquery-3.3.0.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+<script type="text/javascript">
+$(function () {
+	var clist = ajaxdo();
+	productRateSetting();
+	insertCommentRating()
+});
+
+function ajaxdo(){
+	var result;
+	$.ajax({
+		type : "POST",
+		url : "/ajaxComment",
+		data : {"pid": $("#pid").val()},
+		dataType : "json",
+		success: function (data) {
+	         commentRateSetting(data);
+        },
+		error : function(e) {
+			console.log("====Error!====")
+			console.log("ERROR: ", e);
+		}
+	});
+	return result;
+}
+
+function productRateSetting(){
+	/* product rating */
+	var paverage = $("#paverage").val();
+	  $("#prateYo").rateYo({
+		  	spacing   : "3px",
+		  	starWidth: "20px",
+	    	rating: paverage,
+	    	readOnly: true
+	  });
+}
+
+function commentRateSetting(clist){
+	/* print rating of comment list */
+	for (var i = 0; i < clist.length; i++) { 
+        var comment = clist[i];
+	 $("#"+comment.id).rateYo({
+		 	rating: comment.score,
+		  	spacing   : "3px",
+		  	starWidth: "20px",
+		    normalFill: "#A0A0A0",
+	    	halfStar: true,
+	    	readOnly: true
+	  });
+	}
+}
+
+function insertCommentRating(){
+	/* insert rating */
+	$("#rateYo").rateYo({
+	  	spacing   : "3px",
+	  	starWidth: "20px",
+	    normalFill: "#A0A0A0",
+    	halfStar: true,
+    	onChange: function (rating, rateYoInstance) {
+   	      	$(this).next().text(rating);
+   	      	$("#score").val(rating);
+   		}	
+  });
+	/* modify rating */
+	$("#mrateYo").rateYo({
+	  	spacing   : "3px",
+	  	starWidth: "20px",
+	    normalFill: "#A0A0A0",
+    	halfStar: true,
+    	onChange: function (rating, rateYoInstance) {
+   	      	$("#modifyscore").val(rating);
+   		}	
+  });
+}
+</script>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Product Detail</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Custom styles for this template -->
+<link href="css/shop-homepage.css" rel="stylesheet">
+</head>
+
+
+<body>
+
+<!-- Navigation*(A) -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:if="${session.user == null}"
+						class="nav-link" th:href="@{/login}">Login</a> <a
+						th:if="${session.user != null}" class="nav-link"
+						th:href="@{/logout}">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<!-- Navigation*(Z) -->
+
+<!-- ------------------------------------------------------------------------------------------------------------ -->
+
+
+<!-- Body(A) -->
+<div class="row">
+
+<!-- Body Left Side Category (A) -->
+		<div class="col-lg-2">
+			<h1 class="text-center"><br>
+				<a th:href="@{/adminOrder}">Main</a></h1><br>
+			<div class="list-group text-center">
+					<a class="list-group-item" th:href="@{/adminOrder}">注文管理</a> 
+					<a class="list-group-item" th:href="@{/admin}">商品検索</a> 
+					<a class="list-group-item" th:href="@{/adminRegister}">商品登録</a> 
+					<a class="list-group-item" th:href="@{/adminUser}">ユーザ検索</a>
+					<a class="list-group-item" th:href="@{/adminMail}">メール送信</a>
+			</div>
+		</div>
+<!-- Body Left Side Category (Z) -->
+
+
+<!-- Body Right (A) -->
+		<div class="col-lg-10">
+
+	<!-- Product Detail (A) -->
+			<div class="row justify-content-center">
+				<div class="col-10">
+				<!-- <form th:action="@{/adminProductDetail2}" th:object="${pdForm}" method="post"> -->
+					<br>
+					<br>
+					<!-- <a th:href="@{adminSearch}" class="btn btn-secondary text-white">back<i class="material-icons">arrow_back</i></a> -->
+					<br>
+					<h1 align="center">商品詳細&nbsp;&nbsp; 
+					<a	th:href="@{/adminModify(id=${productInfo.id})}"	class="btn btn-warning">修正</a>
+					<a th:if="${productInfo.deleteFlag}==1" th:href="@{/adminDelete(id=${productInfo.id})}" class="btn btn-danger">削除</a>
+					<!-- <input type="submit" name="btn" value="修正" class="btn btn-warning" > -->
+					<!-- <input type="hidden" name="id" th:value="${productInfo.id}"> -->
+					</h1>
+					<br>
+					<br>
+					
+	<!-- Product detail (A) -->
+					<table class="table text-center table-hover">
+						<tr>
+							<th rowspan="9" width="500"><img th:src="@{${'../img/'+productInfo.image+'.jpg'}}" width=480 height=375; /></th>
+							<!-- <th rowspan="9" width="500"><img th:src="@{${'../img/'+productInfo.image}}" width=480 height=375; /></th> -->
+						</tr>
+						<tr>
+							<th width="250">Id</th>
+							<th th:text="${productInfo.id}"></th>
+						</tr>
+						<tr>
+							<th>CategoryId</th>
+							<th th:text="${productInfo.categoryId}"></th>
+						</tr>
+						<tr>
+							<th>Name</th>
+							<th th:text="${productInfo.name}"></th>
+						</tr>
+						<tr>
+							<th>Price</th>
+							<th th:text="${productInfo.price+'円'}"></th>
+						</tr>
+						<tr>
+							<th>Stock</th>
+							<th th:text="${productInfo.stockQuantity}"></th>
+						</tr>
+						<tr>
+							<th>Detail</th>
+							<th th:text="${productInfo.details}"></th>
+						</tr>
+						<tr>
+							<th>Delete_flag</th>
+							<th th:text="${productInfo.deleteFlag}"></th>
+						</tr>
+					</table>
+	<!-- Product detail (Z) -->
+					
+	<!-- 注文履歴 (A) -->
+					<br>
+					<br>
+					<h3>注文履歴</h3>
+					<br>
+					<table class="table text-center table-hover">
+						<tr class="table-primary">
+							<th>NO</th>
+							<th>注文番号</th>
+							<th>会員ID</th>
+							<th>名前</th>
+							<th>住所</th>
+							<th>電話番号</th>
+							<th>メール</th>
+							<th>注文数量</th>
+							<th>注文価格</th>
+							<th>注文日</th>
+						</tr>
+						<tr th:each="aa:${productDetail}">
+							<td th:text="${aaStat.count}"></td>
+							<td th:text="${aa.orderId}"></td>
+							<td><a th:href="@{/adminUserDetail(id=${aa.id})}" th:text="${aa.userId}"></a></td>
+							<td th:text="${aa.name}"></td>
+							<td th:text="${aa.address}"></td>
+							<td th:text="${aa.tel}"></td>
+							<td><a th:href="@{/adminMail(mail=${aa.email})}" th:text="${aa.email}"></a></td>
+							<td th:text="${aa.orderQuantity}"></td>
+							<td th:text="${aa.totalPrice}"></td>
+							<td th:text="${aa.updDate}"></td>
+						</tr>
+					</table>
+	<!-- 注文履歴 (Z) -->				
+	
+					<br>
+					<br>
+				</div>
+				<div class="col-1"></div>
+			</div>
+	<!-- Product Detail (Z) -->
+
+		</div>
+	<!-- Body Right (Z) -->
+	
+	</div>
+<!-- Body(Z) -->
+
+<!-- Footer (A) -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your	Website 2017</p>
+		</div>
+	</footer>
+<!-- Footer (Z) -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+<!--  주문이력 가져오는 left join sql (A)
+SELECT d.order_id, u.name, d.product_id, d.order_quantity, d.inp_date, p.name, p.stock_quantity FROM shop_order_detail d
+
+SELECT d.order_id, u.user_id, u.name, u.address, u.tel, u.email, p.id, p.name, p.price, d.order_quantity, d.order_quantity*p.price as totalprice, d.upd_date FROM shop_order_detail d
+LEFT JOIN shop_product p ON p.id = d.product_id
+LEFT JOIN shop_order o ON o.id = d.order_id 
+LEFT JOIN shop_user u ON u.id=o.user_id 
+GROUP BY d.order_id, p.name
+ORDER BY d.upd_date;
+// WHERE d.product_id=
+
+SELECT d.order_id, o.user_id, d.product_id, d.order_quantity FROM shop_order o
+left JOIN shop_order_detail d ON o.id = d.order_id 
+주문이력 가져오는 left join sql (Z) -->

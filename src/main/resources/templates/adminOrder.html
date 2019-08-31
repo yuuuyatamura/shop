@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+
+<title>Latest Order</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Custom styles for this template -->
+<link href="css/shop-homepage.css" rel="stylesheet">
+</head>
+
+
+<body>
+
+<!-- Navigation*(A) -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:if="${session.user == null}"
+						class="nav-link" th:href="@{/login}">Login</a> <a
+						th:if="${session.user != null}" class="nav-link"
+						th:href="@{/logout}">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<!-- Navigation*(Z) -->
+
+<!-- ------------------------------------------------------------------------------------------------------------ -->
+
+
+<!-- Body(A) -->
+<div class="row">
+
+<!-- Body Left Side Category (A) -->
+		<div class="col-lg-2">
+			<h1 class="text-center"><br>
+				<a th:href="@{/adminOrder}">Main</a></h1><br>
+			<div class="list-group text-center">
+					<a class="list-group-item" th:href="@{/adminOrder}">注文管理</a> 
+					<a class="list-group-item" th:href="@{/admin}">商品検索</a> 
+					<a class="list-group-item" th:href="@{/adminRegister}">商品登録</a> 
+					<a class="list-group-item" th:href="@{/adminUser}">ユーザ検索</a>
+					<a class="list-group-item" th:href="@{/adminMail}">メール送信</a>
+			</div>
+		</div>
+<!-- Body Left Side Category (Z) -->
+
+
+<!-- Body Right (A) -->
+		<div class="col-lg-10">
+			<div class="row justify-content-center">
+				<div class="col-11">
+
+	<!--Search Table (A) -->
+			<form th:action="@{/adminOrder3}" th:object="${suForm}" method="get">
+        	<div class="row">
+        		<div class="col-md-12">
+	        		<br>
+	        		<br>
+	        		<div class="input-group justify-content-center">
+								<select th:field="*{selectCategory}" >
+       						<option value="All">All</option>
+       						<option value="name">Name</option>
+       						<option value="tel">Tel</option>
+       						<option value="orderDate">OrderDate</option>
+       					</select>
+								<input type="text" th:field="*{searchWord}" placeholder="Search Order..." size="40">
+								<span class="input-group-append">
+								<button type="submit" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+								</span>&nbsp;&nbsp;&nbsp;
+								<a th:href="@{/adminOrder}" class="btn btn-secondary">reset</a>
+							</div>
+		        </div>		
+		   	 </div>
+		   	 <br>
+		   	 <br>
+		   	 <br>
+			</form>
+	<!--Search Table (Z) -->	
+	
+	
+<!-- Icon Cards (A) -->
+		<div class="container">
+      <div class="row">
+        <div class="col-xl-3">
+          <div class="card text-white bg-danger o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+              </div>
+              <div class="mr-5"><h4>出荷中　<span th:text="${countOrder1}"></span>件</h4></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" th:href="@{/adminOrder3(deliveryStatus=1)}">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="col-xl-1"></div>
+        <div class="col-xl-3">
+          <div class="card text-white bg-warning o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+              </div>
+              <div class="mr-5"><h4>配送中　<span th:text="${countOrder2}"></span>件</h4></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" th:href="@{/adminOrder3(deliveryStatus=2)}">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="col-xl-1"></div>
+        <div class="col-xl-3">
+          <div class="card text-white bg-success o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+              </div>
+              <div class="mr-5"><h4>配送完了　<span th:text="${countOrder0}"></span>件</h4></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" th:href="@{/adminOrder3(deliveryStatus=0)}">
+              <span class="float-left">View Details</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+      <br>
+      <br>
+      <br>
+<!-- Icon Cards (Z) -->
+	
+	
+	<!-- 注文履歴 (A) -->
+					<h3>注文履歴</h3>
+					<br>
+					<table th:each="ss:${latestOrderS}" class="table text-center table-hover">
+						<tr class="table-primary">
+							<th>No</th>
+							<th>注文番号</th>
+							<th>名前</th>
+							<th>住所</th>
+							<th>電話</th>
+							<th>総合計</th>
+							<th>注文日</th>
+							<th>詳細</th>
+							<th>管理</th>
+						</tr>
+						<tr>
+							<td th:text="${ssStat.count}"></td>
+							<td th:text="${ss.id}"></td>
+							<td><a th:href="@{/adminUserDetail(id=${ss.userId})}" th:text="${ss.name}"></a></td>
+							<td th:text="${ss.address}"></td>
+							<td th:text="${ss.tel}"></td>
+							<td th:text="${ss.totalPrice+'円'}"></td>
+							<td th:text="${ss.inpDate}"></td>
+							<td>
+								<table class="table text-center table-hover">
+									<tr>
+										<th>商品番号</th>
+										<th>商品名</th>
+										<th>価格</th>
+										<th>数量</th>
+										<th>合計</th>
+									</tr>
+									<tr th:each="aa:${latestOrderD}">
+										<td th:if="${ss.id}==${aa.orderId}"
+											th:text="${aa.productId}"></td>
+										<td th:if="${ss.id}==${aa.orderId}"><a
+											th:href="@{/adminProductDetail(id=${aa.productId})}"
+											th:text="${aa.name}"></a></td>
+										<td th:if="${ss.id}==${aa.orderId}"
+											th:text="${aa.price+'円'}"></td>
+										<td th:if="${ss.id}==${aa.orderId}"
+											th:text="${aa.orderQuantity}"></td>
+										<td th:if="${ss.id}==${aa.orderId}"
+											th:text="${aa.totalPrice+'円'}"></td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<form th:action="@{/adminOrder2}" method="post" th:name="form1">
+								<div th:if="${ss.deliveryStatus}==0" class="p-1 bg-success text-white">配送完了</div>
+								<div th:if="${ss.deliveryStatus}==1" class="p-1 bg-danger text-white">出荷中</div>
+								<div th:if="${ss.deliveryStatus}==2" class="p-1 bg-warning text-white">配送中</div><br>
+									<select th:name="deliveryStatus" onChange="top.location.href=value">
+										<option th:value="@{/adminOrder2(deliveryStatus=0,orderId=${ss.id},deliverySort=${deliverySort})}" th:selected="${ss.deliveryStatus} == 0">0.配送完了</option>
+										<option th:value="@{/adminOrder2(deliveryStatus=1,orderId=${ss.id},deliverySort=${deliverySort})}" th:selected="${ss.deliveryStatus} == 1">1.出荷中</option>
+										<option th:value="@{/adminOrder2(deliveryStatus=2,orderId=${ss.id},deliverySort=${deliverySort})}" th:selected="${ss.deliveryStatus} == 2">2.配送中</option>
+								</select><br>
+<!-- 								<br><button type="submit" class="btn btn-info">変更&保存</button>
+								<input type="hidden" th:name="orderId" th:value="${ss.id}"> -->
+								
+								<!-- <br><a th:href="@{/adminOrder2(delevertStatus=${ss.deliveryStatus},orderId=${ss.id})}"></a></button>
+								<input type="hidden" th:name="orderId" th:value="${ss.id}"> -->
+								
+								<!-- <form action="#" name="form1">
+										<select name="select1" onchange="url_jump();">
+										<option value="#">えらんでね
+										<option value="../../anime/index.html">アニメーション GIF
+										<option value="../../hamu/index.html">ハムちゃんの部屋
+										</select> -->
+								
+							</form>
+						</td>
+						</tr>
+					</table>
+	<!-- 注文履歴 (Z) -->		
+				
+					<br> 
+					<br>
+				</div>
+			</div>
+	<!-- User Detail (Z) -->
+		
+		</div>
+<!-- Body Right (Z) -->
+	
+	</div>
+<!-- Body(Z) -->
+
+<!-- Footer (A) -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your	Website 2017</p>
+		</div>
+	</footer>
+<!-- Footer (Z) -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+function url_jump() {
+	document.form1.select1.blur();
+	var num = document.form1.select1.selectedIndex;
+	location.href = document.form1.select1.options[num].value;
+}
+
+</script>
+</body>
+</html>
+
+<!--  주문이력 가져오는 left join sql (A)
+SELECT d.order_id, d.product_id, p.name, p.price, d.order_quantity, p.price*d.order_quantity as totalPrice, d.upd_date FROM shop_order_detail d
+LEFT JOIN shop_product p ON d.product_id=p.id 
+LEFT JOIN shop_order o ON o.id=d.order_id 
+LEFT JOIN shop_user u ON u.id=o.user_id 
+
+GROUP BY d.order_id 
+ORDER BY d.upd_date DESC;
+
+WHERE u.id=#{id}
+주문이력 가져오는 left join sql (Z) -->

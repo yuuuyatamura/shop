@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Admin Regist</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Custom styles for this template -->
+<link href="css/shop-homepage.css" rel="stylesheet">
+</head>
+
+
+<body>
+
+<!-- Navigation*(A) -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:if="${session.user == null}"
+						class="nav-link" th:href="@{/login}">Login</a> <a
+						th:if="${session.user != null}" class="nav-link"
+						th:href="@{/logout}">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<!-- Navigation*(Z) -->
+
+<!-- ------------------------------------------------------------------------------------------------------------ -->
+
+<!-- Body(A) -->
+	<div class="row">
+
+<!-- Body Left Side Category (A) -->
+		<div class="col-lg-2">
+			<h1 class="text-center"><br>
+				<a th:href="@{/adminOrder}">Main</a></h1><br>
+			<div class="list-group text-center">
+					<a class="list-group-item" th:href="@{/adminOrder}">注文管理</a> 
+					<a class="list-group-item" th:href="@{/admin}">商品検索</a> 
+					<a class="list-group-item" th:href="@{/adminRegister}">商品登録</a> 
+					<a class="list-group-item" th:href="@{/adminUser}">ユーザ検索</a>
+					<a class="list-group-item" th:href="@{/adminMail}">メール送信</a>
+			</div>
+		</div>
+<!-- Body Left Side Category (Z) -->
+
+
+<!-- Body Right (A) -->
+		<div class="col-lg-10">
+			<form th:action="@{/adminRegister2}" th:object="${pdForm}" name="frm"	method="post" enctype="multipart/form-data">
+				<br>
+				<br>
+
+	<!-- Regist Product (A) -->		
+				<div class="row justify-content-center">
+					<div class="col-10">
+						<h1 align="center">商品登録</h1>
+						<br>
+						<br>
+
+						<table class="table table-hover" style="font-size: 13pt;">
+							<tr>
+								<th rowspan="8" width="500">
+									<img id="blah" src="../img/photo1.png" width=480 height=375;/>
+									<input type="file" th:name="image2" onchange="readURL(this);" class="btn btn-secondary btn-block" required/></th>
+							</tr>
+							<tr style="text-indent: 20px;">
+								<th>Category</th>
+								<td><select	th:field="*{categoryId}" required>
+										<option value=""></option>
+										<option value="1">1.bed room</option>
+										<option value="2">2.kitchen</option>
+										<option value="3">3.bathroom</option>
+										<option value="4">4.nothing</option>
+										<option value="5">5.decorations</option>
+										<option value="6">6.dining</option>
+										<option value="7">7.living</option>
+										<option value="8">8.lighting</option>
+										<option value="9">9.storage</option>
+								</select></td>
+							</tr>
+							<tr style="text-indent: 20px;">
+								<th>Name</th>
+								<td><input type="text" th:field="*{name}" required></td>
+							</tr>
+							<tr style="text-indent: 20px;">
+								<th>Price</th>
+								<td><input type="number" th:field="*{price}" required></td>
+							</tr>
+							<tr style="text-indent: 20px;">
+								<th>Stock</th>
+								<td><input type="number" th:field="*{stockQuantity}" required></td>
+							</tr>
+							<tr style="text-indent: 20px;">
+								<th>Detail</th>
+								<td><textarea th:field="*{details}" rows="5" cols="30" style="overflow: hidden;"></textarea></td>
+							</tr>
+						</table>
+						
+						<br>
+						<br>
+						<br>
+						<div class="row justify-content-center ">
+							<div class="col-6">
+								<input type="submit" name="btn" value="登録"	onclick="registcheck()" class="btn btn-primary btn-lg btn-block" style="line-height: 2;">
+								<br>
+								<br>
+								<br>
+							</div>
+						</div>
+					</div>
+					<div class="col-1"></div>
+				</div>
+	<!-- Regist Product (Z) -->	
+				
+				<br>
+				<br>
+			</form>
+		</div>
+<!-- Body Right (Z) -->
+		
+	</div>
+<!-- Body(Z) -->
+
+<!-- Footer (A) -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your	Website 2017</p>
+		</div>
+	</footer>
+<!-- Footer (Z) -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+function registcheck() {
+		if(frm.name.value !="" && frm.categoryId.value !="" && frm.price.value !="" && frm.stockQuantity.value !="" && frm.image2.value !=""){
+			/* swal("Good job!", "You clicked the button!", "success"); */
+			alert("登録完了");
+			return true;
+		}
+	}   
+	 
+	function readURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#blah').attr('src', e.target.result).width(480).height(375);
+			};
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+</script>
+</body>
+</html>

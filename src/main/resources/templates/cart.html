@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>THP</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+	<!-- font awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Custom styles for this template -->
+    <link href="css/1-col-portfolio.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+         
+          	<!-- search bar -->
+			<li class="nav-item">
+				<form th:action="@{/list}" method="get" class="form-inline my-2 my-lg-0 mr-lg-2">
+					<div class="input-group">
+						<input class="form-control" name="keyword" type="text" maxlength="100" placeholder="Search for...">
+						<span class="input-group-append">
+							<button class="btn btn-secondary" type="submit"><i class="fa fa-search"></i></button>
+						</span>
+					</div>
+				</form>
+			</li>
+
+			<li class="nav-item">
+              <a class="nav-link" th:href="@{/index}">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" th:href="@{/list}">Search</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" th:href="@{/cart}">Cart</a>
+            </li>
+            <li class="nav-item">
+              <a th:if="${session.user == null}" class="nav-link" th:href="@{/login}">Login</a>
+              <a th:if="${session.user != null}" class="nav-link" th:href="@{/myPage}">MyPage</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Page Heading -->
+      <h1 class="my-4">Cart
+        <small>カート目録</small>
+      </h1>
+
+      <!-- Project One -->
+      <div class="row" th:each="o : ${list}">
+        <div class="col-md-3">
+          <a th:href="@{/detail(id=${o.pid})}">
+            <img class="card-img-top" th:src="@{${'~/img/'+o.image+'.jpg'}}" th:alt="${o.pname}">
+          </a>
+        </div>
+        <div class="col-md-9 align-items-center">
+        <div class="row align-items-center">
+        	<div class="col-md-12 text-center">
+	        	<h3><span th:text="${o.pname}">Project One</span></h3>
+        	</div>
+	        <div class="w-100"><hr></div>
+        	<div class="col-md-12">
+        		<div class="row text-center">
+	          	<div class="col"><h6>PRICE　価格</h6></div>
+	          	<div class="col"><h6>NUM　数量</h6></div>
+	          	<div class="col"><h6>TOTAL　総価格</h6></div>
+	          </div>
+	          <div class="row text-center">
+	          	<div class="col"><span th:text="${o.price}"></span></div>
+	          	<div class="col"><span th:text="${o.num}"></span></div>
+	          	<div class="col"><span th:text="${o.total}"></span></div>
+	          </div>
+        	</div>
+	          <div class="w-100"><hr></div>
+        	<div class="col-md-12 text-right">
+	          <a class="btn btn-danger btn-lg" th:href="@{/cartDelete(pid=${o.pid})}">削除</a>
+	         <!--  <a class="btn btn-info btn-lg" th:href="@{/cartModify(pid=${o.pid})}">修正</a> -->
+        	</div>
+	          
+        </div>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+      		<div class="col-md-12 text-right" th:if="${list != null}">
+	      		<h1 class="my-4">TOTAL PRICE 総価格　><small><span th:text="${orderTotalPrice}"></span></small>円</h1>
+	      	</div>
+	     	<div class="col-md-12" th:if="${list != null}" >
+	      		<a class="btn btn-success btn-lg btn-block" th:href="@{/order}" th:if="${list.size() > 0}">注文</a>
+	      	</div>
+      </div>
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="fixed-bottom py-5 bg-dark" style="position:relative;">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+
+  </body>
+
+</html>

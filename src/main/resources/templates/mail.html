@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+  </head>
+
+  <body>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Page Heading -->
+	    <table>	
+	    <tr style="text-align: center;">
+	    	<th colspan="4"><h2 class="my-4" >　Order List　注文目録　</h2></th>
+	    </tr>
+	    <tr style="text-align: center;">
+	    	<th colspan="4"><h2>　ご注文ありがとうございます。　</h2></th>
+	    </tr>
+	    <tr style="text-align: center;">
+	    	<td colspan="4">　注文番号　:　<span th:text="${orderId}"></span>　</td>
+	    </tr>
+	    <tr style="text-align: center;"><td>　</td></tr>
+	    	<tr style="background-color: #f0f3f7">
+	    		<th style="width: 250px;"><h3>　商品名　</h3></th>
+	    		<th style="width: 100px;"><h3>　数量　</h3></th>
+	    		<th style="width: 100px;"><h3>　価格　</h3></th>
+	    		<th style="width: 100px;"><h3>　合計　</h3></th>
+	    	</tr>
+	    	<tr th:each="o : ${list}">
+	    		<td><h3>　<span th:text="${o.pname}"></span></h3></td>
+	    		<td style="text-align: center;"><h3>　<span th:text="${o.num}"></span></h3></td>
+	    		<td style="text-align: center;"><h3>　<span th:text="${o.price+'円'}"></span></h3></td>
+	    		<td style="text-align: center;"><h3>　<span th:text="${o.total+'円'}"></span></h3></td>
+	    	</tr>
+	    </table><br><br><br><br><br>
+		    
+    </div>
+    <!-- /.container -->
+
+  </body>
+
+</html>

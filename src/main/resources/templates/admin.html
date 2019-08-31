@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Admin Main</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Custom styles for this template -->
+<link href="css/shop-homepage.css" rel="stylesheet">
+</head>
+
+
+<body>
+
+<!-- Navigation*(A) -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:if="${session.user == null}"
+						class="nav-link" th:href="@{/login}">Login</a> <a
+						th:if="${session.user != null}" class="nav-link"
+						th:href="@{/logout}">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<!-- Navigation*(Z) -->
+
+<!-- ------------------------------------------------------------------------------------------------------------ -->
+
+<!-- Body(A) -->
+	<div class="row">
+
+<!-- Body Left Side Category (A) -->
+		<div class="col-lg-2">
+			<h1 class="text-center"><br>
+				<a th:href="@{/adminOrder}">Main</a></h1><br>
+			<div class="list-group text-center">
+					<a class="list-group-item" th:href="@{/adminOrder}">注文管理</a> 
+					<a class="list-group-item" th:href="@{/admin}">商品検索</a> 
+					<a class="list-group-item" th:href="@{/adminRegister}">商品登録</a> 
+					<a class="list-group-item" th:href="@{/adminUser}">ユーザ検索</a>
+					<a class="list-group-item" th:href="@{/adminMail}">メール送信</a>
+					<!-- <a th:href="@{/adminChart}" class="list-group-item">販売分析</a> -->
+			</div>
+		</div>
+<!-- Body Left Side Category (Z) -->
+
+
+<!-- Body Right (A) -->
+		<div class="col-lg-10">
+		
+	<!--EasySearch (A) -->
+			<form th:action="@{/adminSearch}" th:object="${adForm}" method="get">
+				<div class="row">
+					<div class="col-11">
+						<div class="container">
+							<div class="row">
+								<div class="col-12">
+									<br>
+									<br>
+									<div class="input-group justify-content-center">
+											<select	th:field="*{selectCategory}">
+												<option value="All">All</option>
+												<option value="id">Id</option>
+												<option value="category_id">Category</option>
+												<option value="name">Name</option>
+											</select>
+											<input type="text" th:field="*{searchWord}"	placeholder="Search Product..." size="40"> 
+											<span	class="input-group-append">
+											<button type="submit" class="btn btn-secondary">
+												<i class="fa fa-search"></i>
+											</button>
+										</span>&nbsp;&nbsp;&nbsp; 
+										<a th:href="@{/admin}" class="btn btn-secondary">reset</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br>
+	<!--EasySearch (Z) -->
+
+	<!--Detail Search (A) -->
+				<center>
+					<div class="row ">
+						<div class="col-11">
+							<div class="container">
+								<div class="jumbotron">
+									<div class="row">
+										<div class="col-3 ">
+											<input type="text" th:field="*{id}" class="form-control" placeholder="id">
+										</div>
+										<div class="col-3">
+											<select class="custom-select" th:field="*{categoryId}">
+												<option value="">Category</option>
+												<option value="1">1.bed room</option>
+												<option value="2">2.kitchen</option>
+												<option value="3">3.bathroom</option>
+												<option value="4">4.nothing</option>
+												<option value="5">5.decorations</option>
+												<option value="6">6.dining</option>
+												<option value="7">7.living</option>
+												<option value="8">8.lighting</option>
+												<option value="9">9.storage</option>
+											</select>
+										</div>
+										<div class="col-3">
+											<select class="custom-select" th:field="*{deleteFlag}">
+												<option value="3">Delete_flag</option>
+												<option value="1">1.在庫あり</option>
+												<option value="0">0.在庫なし</option>
+												<option value="2">すべて</option>
+											</select>
+										</div>
+										<div class="col-3">
+											<input type="text" th:field="*{details}" class="form-control" placeholder="details">
+										</div>
+									</div>
+									<div class="row">　</div>
+									<div class="row">
+										<div class="col-3">
+											<input type="text" th:field="*{name}" class="form-control" placeholder="name">
+										</div>
+										<div class="col-2">
+											<input type="number" th:field="*{price1}" class="form-control" placeholder="price から">
+										</div>
+										<div class="col-2">
+											<input type="number" th:field="*{price2}" class="form-control" placeholder="price まで">
+										</div>
+										<div class="col-2">
+											<input type="number" th:field="*{stockQuantity1}" class="form-control" placeholder="stock から">
+										</div>
+										<div class="col-2">
+											<input type="number" th:field="*{stockQuantity2}" class="form-control" placeholder="stock まで">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			</form><br>
+	<!--Detail Search Table (Z) -->
+
+	<!-- ProductList Table (A) -->
+			<div class="row">
+				<div class="col-11">
+					
+					<table class="table text-center table-hover">
+						<tr class="table-primary">
+							<th>No</th>
+							<th><a th:href="@{/adminSearch(btn=idsort1)}"><i class="fa fa-arrow-up"></i></a>Id 
+									<a th:href="@{/adminSearch(btn=idsort2)}"><i class="fa fa-arrow-down"></i></a></th>
+							<th><a th:href="@{/adminSearch(btn=cidsort1)}"><i	class="fa fa-arrow-up"></i></a>Category
+									<a th:href="@{/adminSearch(btn=cidsort2)}"><i class="fa fa-arrow-down"></i></a></th>
+							<th><a th:href="@{/adminSearch(btn=namesort1)}"><i class="fa fa-arrow-up"></i></a>Name 
+									<a th:href="@{/adminSearch(btn=namesort2)}"><i class="fa fa-arrow-down"></i></a></th>
+							<th><a th:href="@{/adminSearch(btn=pricesort1)}"><i class="fa fa-arrow-up"></i></a>Price 
+									<a th:href="@{/adminSearch(btn=pricesort2)}"><i class="fa fa-arrow-down"></i></a></th>
+							<th><a th:href="@{/adminSearch(btn=sqsort1)}"><i class="fa fa-arrow-up"></i></a>Stock
+									<a th:href="@{/adminSearch(btn=sqsort2)}"><i class="fa fa-arrow-down"></i></a></th>
+							<th>Detail</th>
+							<th>Delete_flag</th>
+							<th>登録日</th>
+							<th>処理</th>
+						</tr>
+						<tr th:each="aa : ${productList}">
+							<td th:text="${aaStat.count}"></td>
+							<td th:text="${aa.id}"></td>
+							<td th:text="${aa.categoryId}"></td>
+							<td><a th:href="@{/adminProductDetail(id=${aa.id})}" th:text="${aa.name}"></a></td>
+							<td th:text="${aa.price}"></td>
+							<td th:text="${aa.stockQuantity}"></td>
+							<td th:text="${aa.details}"></td>
+							<td th:text="${aa.deleteFlag}"></td>
+							<td th:text="${aa.inpDate}"></td>
+							<td><a th:href="@{/adminModify(id=${aa.id},btn=${adForm.sortbtn})}" class="btn btn-warning">修正</a> 
+									<a th:if="${aa.deleteFlag}==1" th:href="@{/adminDelete(id=${aa.id},btn=${adForm.sortbtn})}" class="btn btn-danger">削除</a></td>
+						</tr>
+					</table>
+					
+					<br>
+					<br> 
+					<br>
+					<br>
+				</div>
+			</div>
+	<!-- ProductList Table (Z) -->
+		
+		</div>
+	<!-- Body Right (Z) -->
+	
+	</div>
+<!-- Body (Z) -->
+
+<!-- Footer (A) -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your	Website 2017</p>
+		</div>
+	</footer>
+<!-- Footer (Z) -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
+<!-- 클릭하면 열리고 또 클릭하면 닫힘 (A)
+	<p id="searchbar_disp"><a href="#" onclick="Disp('searchbar_disp', 'searchbar_notdisp', 'searchbar_condi');return false;">Detail Search</a></p>
+	<p id="searchbar_notdisp" style="display:none"><a href="#" onclick="NotDisp('searchbar_notdisp', 'searchbar_disp', 'searchbar_condi');return false;">????</a></p>
+	<div id="searchbar_condi" style="display:none;"> 
+		
+	<script type="text/javascript">
+	function Disp(notdisp, disp, target) {
+	document.getElementById(target).style.display='block';
+	document.getElementById(disp).style.display='block';
+	document.getElementById(notdisp).style.display='none';
+	document.getElementById('easysearch1').style.display='none';
+	}
+	function NotDisp(notdisp, disp, target) {
+	document.getElementById(target).style.display='none';
+	document.getElementById(disp).style.display='block';
+	document.getElementById(notdisp).style.display='none';
+	document.getElementById('easysearch1').style.display='block';
+	}
+	</script>  
+클릭하면 열리고 또 클릭하면 닫힘 (Z)-->
+
+<!-- ahref 안쓰고 hidden과 submit으로 처리하기 (A)
+	<input type="submit" name="btn" value="?폜" class="btn btn-danger">
+	<input type="hidden" name="id" th:value="${aa.id}"> 
+ahref 안쓰고 hidden과 submit으로 처리하기 (Z)	-->
+
+<!-- ahref로 값 보내기 	
+	<a class="btn btn-primary" th:href="@{/adminB(id='1234',btn='temp')}" name="btn" value="temp">button</a> -->
+						

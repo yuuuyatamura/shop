@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.persistence.OrderMapper">
+
+	<resultMap type="com.example.domain.Product" id="productList">
+			<result property="id" column="id"/>
+			<result property="categoryId" column="category_id"/>
+			<result property="category" column="category"/>
+			<result property="name" column="name"/>
+			<result property="image" column="image"/>
+			<result property="price" column="price"/>
+			<result property="stockQuantity" column="stock_quantity"/>
+			<result property="details" column="details"/>
+	</resultMap>
+
+	<select id="getPnames" resultMap="productList" >
+		SELECT * FROM shop_product
+		<if test="array.length > 0">
+		<where>
+			id IN
+				<foreach collection="array" item="key" index="i" separator="," open="(" close=")">
+					#{key}
+				</foreach>
+		</where>
+		</if>
+	</select>
+
+	<insert id="insertOrder" parameterType="com.example.domain.Order">
+		INSERT INTO shop_order(id, user_id, total_price, delivery_status, order_date, inp_date) 
+		VALUES(0, #{uid}, #{totalPrice}, #{deliveryStatus}, #{orderDate}, CURRENT_DATE())
+	</insert>
+
+
+	<insert id="insertOrderDetail">
+		<selectKey keyProperty="orderid" resultType="String" order="BEFORE">
+			SELECT MAX(id) 
+			FROM shop_order 
+			ORDER BY inp_date DESC, upd_date DESC
+			LIMIT 1;
+		</selectKey>
+		INSERT INTO shop_order_detail(id, order_id, product_id, order_quantity, inp_date) VALUES 
+		<foreach collection="list" item="o" index="index" separator=",">
+       		(0, #{orderid}, #{o.pid}, #{o.num}, CURRENT_DATE())
+    	</foreach>
+	</insert>
+	
+	<select id="getOrderId" resultType="String">
+		SELECT id 
+		FROM shop_order 
+		WHERE user_id = #{uid}
+		ORDER BY id DESC
+		LIMIT 1
+	</select>
+
+	<resultMap type="com.example.domain.Order" id="orderHistoryList">
+		<result property="uid" column="user_id"/>
+		<result property="orderId" column="id"/>
+		<result property="totalPrice" column="total_price"/>
+		<result property="orderDate" column="order_date"/>
+		<result property="deliveryStatus" column="delivery_status"/>
+	</resultMap>
+	
+	<select id="purchaseHistory" resultMap="orderHistoryList">
+		SELECT *
+		FROM shop_order
+		WHERE user_id = #{uid}
+		ORDER BY id DESC
+	</select>
+	
+	<resultMap type="com.example.domain.OrderHistory" id="orderHistory">
+		<result property="orderId" column="orderId"/>
+		<result property="pid" column="pid"/>
+		<result property="pname" column="pname"/>
+		<result property="image" column="image"/>
+		<result property="price" column="price"/>
+		<result property="num" column="num"/>
+		<result property="total" column="total"/>
+		<result property="inpDate" column="inpDate"/>
+	</resultMap>
+	
+	<select id="getHistoryDetail" resultMap="orderHistory">
+		SELECT o.id as orderId, p.id as pid, p.name as pname, p.image as image, p.price as price, d.order_quantity as num, (p.price*d.order_quantity) as total, d.inp_date as inpDate  
+		FROM shop_order_detail d
+		RIGHT JOIN shop_order o
+		ON d.order_id = o.id
+		JOIN shop_product p
+		ON d.product_id = p.id
+		WHERE o.id = #{id}
+	</select>
+
+</mapper>

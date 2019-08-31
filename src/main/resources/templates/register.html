@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>THP</title>
+<!-- Bootstrap core CSS-->
+<link rel="stylesheet" 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous"> 
+<!-- Custom fonts for this template-->
+<link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+<!-- Custom styles for this template-->
+<link href="css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="bg-dark">
+	<div class="container">
+		<div class="card card-register mx-auto mt-5">
+			<div class="card-header">Register an Account</div>
+			<div class="card-body">
+
+				<form th:action="@{/registerCheck}" method="post" th:object="${registerForm}" enctype="multipart/form-data">
+
+					<div class="form-group">
+						<div class="form-row">
+							<div class="col-md-6">
+								<label for="inputID">ID</label>
+								<input th:field="*{userId}" class="form-control" id="inputID" th:maxlength="10" type="text" placeholder="ID">
+							</div>
+							<div class="col-md-6">
+								<label th:if="${#fields.hasErrors('userId')}" for="idError">Error</label>
+								<p th:if="${#fields.hasErrors('userId')}" id="idError" th:errors="*{userId}">Incorrect date</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="form-row">
+							<div class="col-md-6">
+								<label for="inputPasswd1">Password</label>
+								<input th:field="*{passwd}" class="form-control" id="inputPasswd1" type="password" placeholder="パスワード" th:maxlength="10">
+								<p th:if="${#fields.hasErrors('passwd')}" th:errors="*{passwd}">Incorrect date</p>
+							</div>
+							<div class="col-md-6">
+								<label for="inputPasswd2">Confirm password</label> 
+								<input th:field="*{passwd2}" class="form-control" id="inputPasswd2" type="password" placeholder="パスワード確認" th:maxlength="10">
+								<p th:if="${#fields.hasErrors('passwd2')}" th:errors="*{passwd2}">Incorrect date</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inputName">Name</label> 
+						<input th:field="*{name}" class="form-control" id="inputName" type="text" aria-describedby="nameHelp" placeholder="名前"  th:maxlength="10">
+						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect date</p>
+					</div>
+
+					<div class="form-group">
+						<label for="inputName">Nick Name</label> 
+						<input th:field="*{nickName}" class="form-control" id="inputNickName" type="text" aria-describedby="nameHelp" placeholder="ニックネーム" th:maxlength="20">
+						<!-- <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Incorrect date</p> -->
+					</div>
+
+					<div class="form-group">
+						<label for="inputAdd">Address</label> 
+						<input th:field="*{address}" class="form-control" id="inputAdd" type="text" aria-describedby="emailHelp" placeholder="住所">
+						<p th:if="${#fields.hasErrors('address')}" th:errors="*{address}">Incorrect date</p>
+					</div>
+
+					<div class="form-group">
+						<label for="inputTel">Tel</label> 
+						<input th:field="*{tel}" class="form-control" id="inputTel" type="tel" aria-describedby="emailHelp" placeholder="電話番号">
+						<p th:if="${#fields.hasErrors('tel')}" th:errors="*{tel}">Incorrect date</p>
+					</div>
+
+					<div class="form-group">
+						<label for="inputEmail">Email</label> 
+						<input th:field="*{email}" class="form-control" id="inputEmail" type="email" aria-describedby="emailHelp" placeholder="メールアドレス">
+						<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect date</p>
+					</div>
+				
+					<div class="form-group">
+						<label for="inputProfile">Profile</label> 
+						<input th:name="profile" onchange="readURL(this);" class="form-control" type="file" aria-describedby="ProfileHelp">
+						<img class="card-img-top img-fluid" id="blah" src="http://via.placeholder.com/320x250" />
+					</div>
+
+					<button type="submit" class="btn btn-primary btn-block">Register</button>
+
+				</form>
+				
+				<div class="text-center">
+					<a class="d-block small mt-3" th:href="@{/login}">Login Page</a>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- Bootstrap core JavaScript-->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<script>
+	function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(440)
+                    .height(330);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+</body>
+
+</html>

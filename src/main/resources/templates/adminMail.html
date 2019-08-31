@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Admin Mail</title>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet"	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+
+<!-- font awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Custom styles for this template -->
+<link href="css/shop-homepage.css" rel="stylesheet">
+</head>
+
+
+<body>
+
+<!-- Navigation*(A) -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/index}">Trendy Home Project</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive"
+				aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:if="${session.user == null}"
+						class="nav-link" th:href="@{/login}">Login</a> <a
+						th:if="${session.user != null}" class="nav-link"
+						th:href="@{/logout}">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<!-- Navigation*(Z) -->
+
+<!-- ------------------------------------------------------------------------------------------------------------ -->
+
+<!-- Body(A) -->
+	<div class="row">
+
+<!-- Body Left Side Category (A) -->
+		<div class="col-lg-2">
+			<h1 class="text-center"><br>
+				<a th:href="@{/adminOrder}">Main</a></h1><br>
+			<div class="list-group text-center">
+					<a class="list-group-item" th:href="@{/adminOrder}">注文管理</a> 
+					<a class="list-group-item" th:href="@{/admin}">商品検索</a> 
+					<a class="list-group-item" th:href="@{/adminRegister}">商品登録</a> 
+					<a class="list-group-item" th:href="@{/adminUser}">ユーザ検索</a>
+					<a class="list-group-item" th:href="@{/adminMail}">メール送信</a>
+			</div>
+		</div>
+<!-- Body Left Side Category (Z) -->
+
+<!-- Body Right (A) -->
+		<div class="col-lg-9">
+			<form th:action="@{/adminMail2}" th:object="${MForm}" method="post">
+				<br>
+				<br>
+				
+	<!--Mail Table (A) -->
+					<div class="row justify-content-center">
+					<div class="col-lg-9">
+						<h1 style="text-align: center;">メール画面</h1>
+						<br>
+						<br>
+						
+						<table class="table table-hover" style="font-size: 13pt; text-indent: 20px;">
+							<tr class="bg-secondary text-white text-center">
+								<th colspan="2"><h4>Mail Form</h4></th>
+							</tr>
+							<tr>
+								<th>From</th>
+								<th><input type="email" size="50" th:field="*{from}" th:value="${MForm.from}" name="from" required></th>
+							</tr>
+							<tr>
+								<th>To</th>
+								<th><input type="email" size="50" th:field="*{to}" th:value="${MForm.to}" name="to" required></th>
+							</tr>
+							<tr>
+								<th>件名</th>
+								<th><input type="text" size="50" th:field="*{subject}" required></th>
+							</tr>
+							<tr>
+								<th>内容</th>
+								<th><textarea th:field="*{content}" rows="10" cols="80" style="overflow: hidden;" required></textarea></th>
+							</tr>
+						</table>
+						
+						<br>
+						<br>
+						<br>
+						<div class="row justify-content-center ">
+							<div class="col-6">
+								<input type="submit" name="btn" value="送る"	class="btn btn-primary btn-lg btn-block" style="line-height: 2;">
+								<br>
+								<br>
+								<br>
+							</div>
+						</div>
+					</div>
+				</div>
+	<!-- Mail Table (Z) -->
+	
+				<br>
+				<br>
+				<br>
+				<br>
+			</form>
+		</div>
+<!-- Body Right (Z) -->
+
+	</div>
+<!-- Body(Z) -->
+
+<!-- Footer (A) -->
+	<footer class="py-5 bg-dark">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; Your	Website 2017</p>
+		</div>
+	</footer>
+<!-- Footer (Z) -->
+
+<!-- Bootstrap core JavaScript -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

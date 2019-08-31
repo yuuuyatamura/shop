@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.persistence.AdminMapper">
+
+	<!-- Main画面 リスト -->
+	<select id="productList" resultType="com.example.domain.Product">
+		SELECT id, category_id,
+		name, price, stock_quantity, details, delete_flag, inp_date, upd_date
+		FROM shop_product
+		WHERE delete_flag=1
+	</select>
+
+
+	<!-- Search -->
+	<select id="search" resultType="com.example.domain.Product">
+		SELECT id, category_id,	name, price, stock_quantity, details, delete_flag, inp_date, upd_date
+		FROM shop_product
+		<where>
+			<if test="selectCategory == 'All'">
+				(id LIKE '%${searchWord}%' OR category_id LIKE '%${searchWord}%' OR name LIKE '%${searchWord}%')
+			</if>
+			<if test="selectCategory == 'id'">
+				AND id LIKE '%${searchWord}%'
+			</if>
+			<if test="selectCategory == 'category_id'">
+				AND category_id LIKE '%${searchWord}%'
+			</if>
+			<if test="selectCategory == 'name'">
+				AND name LIKE '%${searchWord}%'
+			</if>
+			<if test="id != ''">
+				AND id = #{id}
+			</if>
+			<if test="categoryId != ''">
+				AND category_id = #{categoryId}
+			</if>
+			<if test="deleteFlag == 3 ">
+				AND delete_flag = 1
+			</if>
+			<if test="deleteFlag == 1 ">
+				AND delete_flag = #{deleteFlag}
+			</if>
+			<if test="deleteFlag == 0 ">
+				AND delete_flag = #{deleteFlag}
+			</if>
+			<if test="details != ''">
+				AND details LIKE '%${details}%'
+			</if>
+			<if test="name != ''">
+				AND name = #{name}
+			</if>
+			<if test="price1 != null">
+                <![CDATA[ AND price >= ${price1} ]]>
+            </if>
+            <if test="price2 != null">
+                <![CDATA[ AND price <= ${price2} ]]>
+            </if>  
+			<if test="stockQuantity1 != null">
+                <![CDATA[ AND stock_quantity >= ${stockQuantity1} ]]>
+            </if>
+            <if test="stockQuantity2 != null">
+                <![CDATA[ AND stock_quantity <= ${stockQuantity2} ]]>
+            </if>  
+		</where>
+			<if test="sortbtn == 'idsort1'">
+				ORDER BY id 
+			</if> 
+			<if test="sortbtn == 'idsort2'">
+				ORDER BY id DESC
+			</if> 
+			<if test="sortbtn == 'cidsort1'">
+				ORDER BY category_id 
+			</if> 
+			<if test="sortbtn == 'cidsort2'">
+				ORDER BY category_id DESC
+			</if> 
+			<if test="sortbtn == 'namesort1'">
+				ORDER BY name 
+			</if> 
+			<if test="sortbtn == 'namesort2'">
+				ORDER BY name DESC
+			</if> 
+			<if test="sortbtn == 'pricesort1'">
+				ORDER BY price
+			</if> 
+			<if test="sortbtn == 'pricesort2'">
+				ORDER BY price DESC
+			</if> 
+			<if test="sortbtn == 'sqsort1'">
+				ORDER BY stock_quantity
+			</if> 
+			<if test="sortbtn == 'sqsort2'">
+				ORDER BY stock_quantity DESC
+			</if> 
+	</select>
+
+
+	<!-- Searchsort -->
+	<select id="searchsort" resultType="com.example.domain.Product">
+		SELECT id, category_id,
+		name, price, stock_quantity, details, delete_flag, inp_date, upd_date
+		FROM shop_product
+		WHERE delete_flag=1 
+			<if test="sortbtn == 'idsort1'">
+				ORDER BY id 
+			</if> 
+			<if test="sortbtn == 'idsort2'">
+				ORDER BY id DESC
+			</if> 
+			<if test="sortbtn == 'cidsort1'">
+				ORDER BY category_id 
+			</if> 
+			<if test="sortbtn == 'cidsort2'">
+				ORDER BY category_id DESC
+			</if> 
+			<if test="sortbtn == 'namesort1'">
+				ORDER BY name 
+			</if> 
+			<if test="sortbtn == 'namesort2'">
+				ORDER BY name DESC
+			</if> 
+			<if test="sortbtn == 'pricesort1'">
+				ORDER BY price
+			</if> 
+			<if test="sortbtn == 'pricesort2'">
+				ORDER BY price DESC
+			</if> 
+			<if test="sortbtn == 'sqsort1'">
+				ORDER BY stock_quantity
+			</if> 
+			<if test="sortbtn == 'sqsort2'">
+				ORDER BY stock_quantity DESC
+			</if> 
+	</select>
+
+
+	<!-- Main 削除 -->
+	<update id="deleteProduct">
+		UPDATE shop_product SET delete_flag=0 WHERE id=#{id}
+	</update>
+
+
+	<!-- Product 登録 -->
+	<insert id="registerProduct">
+		INSERT INTO shop_product (category_id, name, image, price,
+		stock_quantity, details, inp_date)
+		VALUES
+		(#{categoryId},#{name},#{image},#{price},#{stockQuantity},#{details},CURRENT_DATE())
+	</insert>
+
+
+	<!-- Modify 修正画面 ProductInfo -->
+	<select id="readProductInfo"
+		resultType="com.example.domain.Product">
+		SELECT * FROM shop_product WHERE id=#{id}
+	</select>
+
+
+	<!-- Modify 修正完了 -->
+	<update id="ModifyProduct">
+		UPDATE shop_product SET category_id=#{categoryId},
+		name=#{name}, price=#{price}, image=#{image},
+		stock_quantity=#{stockQuantity},
+		details=#{details}, delete_flag=#{deleteFlag}, inp_date=CURRENT_DATE()
+		WHERE id=#{id}
+	</update>
+
+	
+	<!-- productDetail -->
+	<select id="productDetail" resultType="com.example.domain.OrderDetail">
+		SELECT d.order_id, u.id, u.user_id, u.name, u.address, u.tel, u.email, p.id, p.name, p.price, d.order_quantity, d.order_quantity*p.price as totalPrice, d.upd_date FROM shop_order_detail d
+		LEFT JOIN shop_product p ON d.product_id=p.id 
+		LEFT JOIN shop_order o ON o.id=d.order_id 
+		LEFT JOIN shop_user u ON u.id=o.user_id 
+		WHERE d.product_id=#{id}
+		GROUP BY d.order_id, p.id 
+		ORDER BY d.upd_date DESC;
+	</select>
+	
+	<!-- ＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠ -->
+
+	<!-- UserSearch画面　List All -->
+	<select id="userList" resultType="com.example.domain.User">
+		SELECT id, user_id,
+		name, address, tel, email, inp_date, authority
+		FROM shop_user
+		WHERE authority=1
+	</select>
+
+	
+	<!-- UserSearch画面　SearchList -->
+	<select id="userSearch" resultType="com.example.domain.User">
+		SELECT id, user_id,
+		name, address, tel, email, inp_date, authority
+		FROM shop_user  
+	<where>
+			authority = '1'
+			<if test="selectCategory == 'All'">
+				AND (user_id LIKE '%${searchWord}%' OR name LIKE '%${searchWord}%' OR
+				address LIKE '%${searchWord}%' OR tel LIKE '%${searchWord}%' OR email LIKE '%${searchWord}%')
+			</if>
+			<if test="selectCategory == 'userId'">
+				AND user_id = #{searchWord}
+			</if>
+			<if test="selectCategory == 'name'">
+				AND name = #{searchWord}
+			</if>
+			<if test="selectCategory == 'address'">
+				AND address = #{searchWord}
+			</if>
+			<if test="selectCategory == 'tel'">
+				AND tel = #{searchWord}
+			</if>
+			<if test="selectCategory == 'email'">
+				AND email = #{searchWord}
+			</if>
+		</where>
+			<if test="sortbtn == 'sort1'">
+				ORDER BY id 
+			</if> 
+			<if test="sortbtn == 'sort2'">
+				ORDER BY id DESC
+			</if> 
+			<if test="sortbtn == 'idsort1'">
+				ORDER BY user_id 
+			</if> 
+			<if test="sortbtn == 'idsort2'">
+				ORDER BY user_id DESC
+			</if> 
+			<if test="sortbtn == 'namesort1'">
+				ORDER BY name 
+			</if> 
+			<if test="sortbtn == 'namesort2'">
+				ORDER BY name DESC
+			</if> 
+			<if test="sortbtn == 'addsort1'">
+				ORDER BY address
+			</if> 
+			<if test="sortbtn == 'addsort2'">
+				ORDER BY address DESC
+			</if> 
+			<if test="sortbtn == 'emsort1'">
+				ORDER BY email
+			</if> 
+			<if test="sortbtn == 'emsort2'">
+				ORDER BY email DESC
+			</if>
+	</select>
+	
+	
+	
+	<!-- UserSearch画面　List All Sort -->
+	<select id="userSearchSort" resultType="com.example.domain.User">
+		SELECT id, user_id,
+		name, address, tel, email, inp_date, authority
+		FROM shop_user WHERE authority=1
+			<if test="sortbtn == 'sort1'">
+				ORDER BY id 
+			</if> 
+			<if test="sortbtn == 'sort2'">
+				ORDER BY id DESC
+			</if> 
+			<if test="sortbtn == 'idsort1'">
+				ORDER BY user_id 
+			</if> 
+			<if test="sortbtn == 'idsort2'">
+				ORDER BY user_id DESC
+			</if> 
+			<if test="sortbtn == 'namesort1'">
+				ORDER BY name 
+			</if> 
+			<if test="sortbtn == 'namesort2'">
+				ORDER BY name DESC
+			</if> 
+			<if test="sortbtn == 'addsort1'">
+				ORDER BY address
+			</if> 
+			<if test="sortbtn == 'addsort2'">
+				ORDER BY address DESC
+			</if> 
+			<if test="sortbtn == 'emsort1'">
+				ORDER BY email
+			</if> 
+			<if test="sortbtn == 'emsort2'">
+				ORDER BY email DESC
+			</if>
+	</select>
+
+	
+	<!-- User情報画面 -->
+	<select id="readUserInfo" resultType="com.example.domain.User">
+		SELECT id, user_id, passwd, name, tel, email, address, upd_date, authority
+		FROM shop_user  
+		WHERE id=#{id}
+	</select>
+
+
+	<!-- User情報画面　order List -->
+	<select id="userDetail" resultType="com.example.domain.OrderDetail">
+		SELECT d.order_id, d.product_id, p.name, p.price, d.order_quantity, p.price*d.order_quantity as totalPrice, d.upd_date FROM shop_order_detail d
+		LEFT JOIN shop_product p ON d.product_id=p.id 
+		LEFT JOIN shop_order o ON o.id=d.order_id 
+		LEFT JOIN shop_user u ON u.id=o.user_id 
+		WHERE u.id=#{id}
+		GROUP BY d.order_id, p.id 
+		ORDER BY d.upd_date DESC;
+	</select>
+	<!-- User情報画面　order List Summary -->
+	<select id="userSummary" resultType="com.example.domain.OrderDetail">
+		SELECT id, total_price, upd_date FROM shop_order
+		WHERE user_id=#{id}
+		GROUP BY id
+		ORDER BY upd_date DESC;
+	</select>
+	
+	<!-- User情報画面　order List -->
+	<select id="latestOrderD" resultType="com.example.domain.OrderDetail">
+		SELECT d.order_id, d.product_id, p.name, p.price, d.order_quantity, p.price*d.order_quantity as totalPrice, d.upd_date FROM shop_order_detail d
+		LEFT JOIN shop_product p ON d.product_id=p.id 
+		LEFT JOIN shop_order o ON o.id=d.order_id 
+		LEFT JOIN shop_user u ON u.id=o.user_id 
+		GROUP BY d.order_id, p.id 
+		ORDER BY d.upd_date DESC;
+	</select>
+	<!-- User情報画面　order List Summary -->
+	<select id="latestOrderS" resultType="com.example.domain.OrderDetail">
+		SELECT o.id, u.name, u.id as userId, o.delivery_status, u.address, u.tel, u.email, o.total_price, o.inp_date, o.upd_date FROM shop_order o
+		LEFT JOIN shop_user u ON u.id=o.user_id
+		GROUP BY id
+		ORDER BY upd_date DESC;
+	</select>
+	<!-- User情報画面　order List Summary -->
+	<select id="latestOrderSF" resultType="com.example.domain.OrderDetail">
+		SELECT o.id, u.name, u.id as userId, o.delivery_status, u.address, u.tel, u.email, o.total_price, o.inp_date, o.upd_date FROM shop_order o
+		LEFT JOIN shop_user u ON u.id=o.user_id
+		<where>
+			<if test="selectCategory == 'All'">
+				AND (u.name LIKE '%${searchWord}%' OR u.tel LIKE '%${searchWord}%' OR o.inp_date LIKE '%${searchWord}%')
+			</if>
+			<if test="selectCategory == 'name'">
+				AND u.name = #{searchWord} 
+			</if>
+			<if test="selectCategory == 'tel'">
+				AND u.tel = #{searchWord} 
+			</if>
+			<if test="selectCategory == 'orderDate'">
+				AND o.inp_date =#{searchWord}
+			</if>
+			<if test="deliveryStatus == 1">
+				AND o.delivery_status =1
+			</if>
+				<if test="deliveryStatus == 2">
+			 	AND o.delivery_status =2
+			</if>
+				<if test="deliveryStatus == 0">
+			 	AND o.delivery_status =0
+			</if>
+		</where>
+		GROUP BY id
+		ORDER BY upd_date DESC;
+	</select>
+	
+	
+		<!-- Modify 修正完了 -->
+	<update id="ModifyOrderShip">
+		UPDATE shop_order 
+		SET delivery_status=#{deliveryStatus}
+		WHERE id=#{orderId}
+	</update>
+
+
+	<!-- ＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠＠ -->
+
+	<!-- Chart画面　UserCount -->
+	<select id="countOrder0" resultType="int">
+		 select count(*) from shop_order where delivery_status=0;
+	</select>
+	<!-- Chart画面　UserCount -->
+	<select id="countOrder1" resultType="int">
+		 select count(*) from shop_order where delivery_status=1;
+	</select>
+	<!-- Chart画面　UserCount -->
+	<select id="countOrder2" resultType="int">
+		 select count(*) from shop_order where delivery_status=2;
+	</select>
+
+	
+
+
+
+
+
+</mapper>

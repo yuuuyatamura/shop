@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC 
+        "-//mybatis.org//DTD Mapper 3.0//EN" 
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.persistence.ProductMapper">
+
+	<resultMap type="com.example.domain.Product" id="productList">
+			<result property="id" column="id"/>
+			<result property="categoryId" column="category_id"/>
+			<result property="category" column="category"/>
+			<result property="name" column="name"/>
+			<result property="image" column="image"/>
+			<result property="price" column="price"/>
+			<result property="stockQuantity" column="stock_quantity"/>
+			<result property="details" column="details"/>
+			<result property="average" column="average"/>
+	</resultMap>
+	
+	<select id="getFirstList" resultMap="productList">
+		SELECT p.id as id, p.category_id, c.name as category, p.name as name, p.image as image, p.price as price, IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) AS stock_quantity, p.details as details, IFNULL(ROUND(AVG(cm.score), 1), 0) as average
+		FROM shop_product p
+		LEFT JOIN shop_order_detail d
+		ON p.id = d.product_id
+		JOIN shop_category c
+		On p.category_id = c.id
+		LEFT JOIN shop_comment cm
+		ON cm.product_id = p.id
+		WHERE IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) > 0 AND p.delete_flag = 1
+		GROUP BY p.id
+		ORDER BY p.id DESC
+		LIMIT 6
+	</select>
+	
+	<select id="getProduct" resultType="com.example.domain.Product">
+		SELECT p.id as id, p.category_id, c.name as category, p.name as name, p.image as image, p.price as price, IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) AS stock_quantity, p.details as details, IFNULL(ROUND(AVG(cm.score), 1), 0) as average
+		FROM shop_product p
+		LEFT JOIN shop_order_detail d
+		ON p.id = d.product_id
+		JOIN shop_category c
+		On p.category_id = c.id
+		LEFT JOIN shop_comment cm
+		ON cm.product_id = p.id
+		WHERE IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) > 0 AND p.delete_flag = 1
+		GROUP BY p.id
+		HAVING p.id = #{id} 
+	</select>
+	
+	<select id="getList" resultMap="productList">
+		SELECT p.id as id, p.category_id, c.name as category, p.name as name, p.image as image, p.price as price, IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) AS stock_quantity, p.details as details, IFNULL(ROUND(AVG(cm.score), 1), 0) as average
+		FROM shop_product p
+		LEFT JOIN shop_order_detail d
+		ON p.id = d.product_id
+		JOIN shop_category c
+		On p.category_id = c.id
+		LEFT JOIN shop_comment cm
+		ON cm.product_id = p.id
+		<where>
+		IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) > 0 
+		AND p.delete_flag = 1
+		<if test="option.keywords.length > 0">
+			<foreach collection="option.keywords" item="key">
+				<if test="key != null">
+				<bind name="likeword" value="'%' + key + '%'"/>
+						AND p.name LIKE #{likeword}
+				</if>
+			</foreach>
+		</if>
+		<if test="option.categoryId != null and option.categoryId != ''">
+			AND p.category_id = #{option.categoryId}
+		</if>
+		AND stock_quantity > 0
+		</where>
+		GROUP BY p.id
+		ORDER BY ${option.sort} ${option.sortFormat}
+		LIMIT #{page.pageNo}, #{page.pageSize}
+	</select>
+	
+	
+	<select id="getTotalCount" resultType="String">
+		SELECT SUM(count) FROM (
+			SELECT COUNT(p.id) as count
+			FROM shop_product p
+			LEFT JOIN shop_order_detail d
+			ON p.id = d.product_id
+			JOIN shop_category c
+			On p.category_id = c.id
+			LEFT JOIN shop_comment cm
+			ON cm.product_id = p.id
+			<where>
+			IFNULL(p.stock_quantity - d.order_quantity, p.stock_quantity) > 0
+			AND p.delete_flag = 1
+			<if test="option.keywords.length > 0">
+				<foreach collection="option.keywords" item="key">
+					<if test="key != null">
+					<bind name="likeword" value="'%' + key + '%'"/>
+							AND p.name LIKE #{likeword}
+					</if>
+				</foreach>
+			</if>
+			<if test="option.categoryId != null and option.categoryId != ''">
+				AND p.category_id = #{option.categoryId}
+			</if>
+			AND stock_quantity > 0
+			</where>
+			GROUP BY p.id
+			) a
+	</select>
+	
+	<resultMap type="com.example.domain.Comment" id="comment">
+		<result property="id" column="id"/>
+		<result property="productId" column="product_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="nickName" column="nick_name"/>
+		<result property="orderDetailId" column="order_detail_id"/>
+		<result property="score" column="score"/>
+		<result property="comment" column="comment"/>
+		<result property="inpDate" column="inp_date"/>
+	</resultMap>
+
+	<select id="getCommentList" resultMap="comment">
+		SELECT u.nick_name as nick_name, c.id as id, c.product_id as product_id, 
+				c.user_id as user_id, c.order_detail_id as order_detail_id, c.score as score, 
+				c.comment as comment, c.inp_date as inp_date
+		FROM shop_comment c
+		JOIN shop_user u
+		ON u.id = c.user_id
+		LEFT JOIN shop_order o
+		ON o.user_id = c.user_id
+		JOIN shop_order_detail d
+		ON d.order_id = o.id
+		WHERE c.product_id = #{pid}
+		GROUP BY c.id
+		ORDER BY c.id DESC
+	</select>
+	
+	<select id="getOrderDetailList" resultType="String">
+		SELECT o.user_id
+		FROM shop_order o
+		JOIN shop_order_detail d
+		ON o.id = d.order_id
+		WHERE d.product_id = #{pid}
+	</select>
+	
+	<insert id="insertComment">
+		<selectKey keyProperty="did" order="BEFORE" resultType="Integer">
+			SELECT d.id 
+			FROM shop_order_detail d 
+			JOIN shop_order o 
+			ON o.id = d.order_id 
+			WHERE o.user_id = #{c.userId} AND d.product_id = #{c.productId} 
+			ORDER BY d.id DESC 
+			LIMIT 1
+		</selectKey>
+		INSERT INTO shop_comment VALUES(0, #{c.productId}, #{c.userId}, #{did}, #{c.score}, #{c.comment}, CURDATE(), CURRENT_TIMESTAMP())
+	</insert>
+	
+	<delete id="deleteComment">
+		DELETE FROM shop_comment WHERE id = #{cid}
+	</delete>
+	
+	<select id="selectComment" resultMap="comment">
+		SELECT * FROM shop_comment WHERE id = #{cid} LIMIT 1
+	</select>
+	
+	<update id="modifyComment">
+		UPDATE shop_comment 
+		SET score = #{c.score}, comment = #{c.comment}
+		WHERE id = #{c.id}
+	</update>
+	
+	<insert id="firstInsert">
+		INSERT INTO shop_product VALUES(0, #{categoryId}, #{name}, #{image}, #{price}, #{stockQuantity}, #{details}, 1, CURDATE(), CURRENT_TIMESTAMP())
+	</insert>
+
+</mapper>
